@@ -97,14 +97,12 @@ def user_graph_permission_list(request):
     }
     return render(request, 'requestor/user_graph_permission_list.html', context)
 
-@login_required
 class UserGraphPermissionCreate(CreateView):
     model = UserGraphPermission
     form_class = UserGraphPermissionForm
     template_name = 'requestor/user_graph_permission_form.html'
     success_url = reverse_lazy('user_graph_permission_list')
-    
-@login_required
+
 class UserGraphPermissionUpdate(UpdateView):
     model = UserGraphPermission
     form_class = UserGraphPermissionForm

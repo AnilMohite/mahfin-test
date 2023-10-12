@@ -2,9 +2,22 @@
 {% block content %}
 
   <h2>{{ form.instance.id|default:"Add" }} User Graph Permission</h2>
-  <form method="post">
+  <form method="post" class="mb-2">
     {% csrf_token %}
-    {{ form.as_p }}  {# Use a rendering method that suits your design #}
+    <div class="row">
+      <div class="mb-3 col-4">
+        <label for="user" class="form-label">{{ form.user.label_tag }} </label>
+        {{ form.user }}
+        <span class="error">{{ form.user.errors }}</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="mb-3 col-4">
+        <label for="graph" class="form-label">{{ form.graph_type.label_tag }} </label>
+        {{ form.graph_type }}
+        <span class="error">{{ form.graph_type.errors }}</span>
+      </div>
+    </div>
     <button type="submit" class="btn btn-primary">Save</button>
   </form>
   <a href="{% url 'user_graph_permission_list' %}" class="btn btn-secondary">Cancel</a>
