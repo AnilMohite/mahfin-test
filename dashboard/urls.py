@@ -11,5 +11,4 @@ urlpatterns = [
     path('permissions/add/', UserGraphPermissionCreate.as_view(), name='add_permission'),
     path('permissions/edit/<int:pk>/', UserGraphPermissionUpdate.as_view(), name='edit_permission'),
     path('permissions/delete/<int:pk>/', user_graph_permission_delete, name='delete_permission')
-
 ]

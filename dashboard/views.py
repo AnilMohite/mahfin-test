@@ -89,7 +89,7 @@ def upload_excel(request):
 
     return render(request, 'requestor/upload_excel.html')
 
-
+@login_required
 def user_graph_permission_list(request):
     permissions = UserGraphPermission.objects.all()
     context = {
@@ -97,24 +97,21 @@ def user_graph_permission_list(request):
     }
     return render(request, 'requestor/user_graph_permission_list.html', context)
 
-# class UserGraphPermissionListView(ListView):
-#     model = UserGraphPermission
-#     template_name = 'requestor/user_graph_permission_list.html'
-#     context_object_name = 'permissions'
-
+@login_required
 class UserGraphPermissionCreate(CreateView):
     model = UserGraphPermission
     form_class = UserGraphPermissionForm
     template_name = 'requestor/user_graph_permission_form.html'
     success_url = reverse_lazy('user_graph_permission_list')
     
-
+@login_required
 class UserGraphPermissionUpdate(UpdateView):
     model = UserGraphPermission
     form_class = UserGraphPermissionForm
     template_name = 'requestor/user_graph_permission_form.html'
     success_url = reverse_lazy('user_graph_permission_list')
 
+@login_required
 def user_graph_permission_delete(request, pk):
     permission = get_object_or_404(UserGraphPermission, pk=pk)
 
