@@ -1,0 +1,149 @@
+{% extends 'common/base.html' %} 
+{% block content %}
+
+<div class="row mb-5">
+  <div class="col-md-12 text-center">
+    <h1>Welcome to the Dashboard</h1>
+  </div>
+    <div class="col-md-3">
+      <select id="country" class="form-select">
+        <option value="">Select a Country</option>
+        {% for country in countries %}
+          <option value="{{ country.country }}" {% if country.country == "India" %}selected{% endif %}>{{ country.country }}</option>
+        {% endfor %}
+      </select>
+  </div>
+</div>
+
+<div class="row">
+    {% if user_permissions.line %}
+    <div class="col-6">
+        <canvas id="line-chart"></canvas>
+    </div>
+    {% endif %}
+    {% if user_permissions.bar %}
+    <div class="col-6">
+        <canvas id="bar-chart"></canvas>
+    </div>
+    {% endif %}
+    {% if user_permissions.pie %}
+    <div class="col-6">
+        <canvas id="pie-chart"></canvas>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+     
+    var lineChart;
+    var barChart;
+    var pieChart;
+
+      function updateChart(chart, selectedCountry) {
+        fetch(`/dashboard/get_country_data/?country=${selectedCountry}`)
+          .then(response => response.json())
+          .then(data => {
+            chart.data.labels = data.labels;
+            chart.data.datasets[0].data = data.values;
+            chart.update();
+          });
+      }
+
+      // Create the line chart
+      {% if user_permissions.line %}
+      var lineCtx = document.getElementById('line-chart').getContext('2d');
+      lineChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Population Data',
+            data: [],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              beginAtZero: true
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      {% endif %}
+      {% if user_permissions.bar %}
+      // Create the bar chart
+      var barCtx = document.getElementById('bar-chart').getContext('2d');
+      barChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Population Data',
+            data: [],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              beginAtZero: true
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+      {% endif %}
+      {% if user_permissions.pie %}
+      // Create the pie chart
+      var pieCtx = document.getElementById('pie-chart').getContext('2d');
+      pieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+          labels: [],
+          datasets: [{
+            data: [],
+            backgroundColor: ['red', 'blue', 'green', 'yellow', 'purple'],
+          }]
+        }
+      });
+      {% endif %}
+      var countrySelect = document.getElementById('country');
+      countrySelect.addEventListener('change', function () {
+        var selectedCountry = countrySelect.value;
+        if (selectedCountry) {
+            {% if user_permissions.line %}
+          updateChart(lineChart, selectedCountry);
+          {% endif %}
+          {% if user_permissions.bar %}
+          updateChart(barChart, selectedCountry);
+          {% endif %}
+          {% if user_permissions.pie %}
+          updateChart(pieChart, selectedCountry);
+          {% endif %}
+        }
+      });
+
+      {% if user_permissions.line %}
+      updateChart(lineChart, 'India');
+      {% endif %}
+      {% if user_permissions.bar %}
+      updateChart(barChart, 'India');
+      {% endif %}
+      {% if user_permissions.pie %}
+      updateChart(pieChart, 'India');
+      {% endif %}
+    });
+</script>
+
+{% endblock %}

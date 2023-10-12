@@ -1,0 +1,45 @@
+{% extends 'common/base.html' %} 
+{% block content %}
+
+<h1>User-Graph Permissions</h1>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<div class="float-end">
+<a class="btn btn-primary" href="{% url 'add_permission' %}">Add Permission</a>
+</div>
+<table class="table table-striped text-center">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">User</th>
+        <th scope="col">Graph Permission</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for permission in permissions %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ permission.user }} </td>
+        <td>{{permission.graph_type}}</td>
+        <td>
+            <a class="btn btn-info" href="{% url 'edit_permission' permission.id %}">Edit</a>
+            <a class="btn btn-danger" href="{% url 'delete_permission' permission.id %}">Delete</a>
+        </td>
+      </tr>
+    {% empty %}
+        <tr>
+            <th colspan="4">No permissions found.</th>
+        </tr>
+      
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
