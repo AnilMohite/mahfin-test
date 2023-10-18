@@ -33,23 +33,29 @@ def check_user_graph_permission(user, graph_type):
 
 @login_required
 def dashboard(request):
-    user_permissions = get_user_permissions(request.user)
-    countries = PopulationData.objects.values('country').distinct()
-    data = PopulationData.objects.values('year', 'value').filter(country='India')
+    try:
+        user_permissions = get_user_permissions(request.user)
+        countries = PopulationData.objects.values('country').distinct()
+        data = PopulationData.objects.values('year', 'value').filter(country='India')
 
-    labels = [entry['year'] for entry in data]
-    values = [entry['value'] for entry in data]
+        labels = [entry['year'] for entry in data]
+        values = [entry['value'] for entry in data]
 
-    chart_data = {
-        "labels": labels,
-        "values": values,
-    }
+        chart_data = {
+            "labels": labels,
+            "values": values,
+        }
 
-    context = {
-        'user_permissions': user_permissions,
-        'chart_data': json.dumps(chart_data),
-        'countries':countries
-    }
+        context = {
+            'user_permissions': user_permissions,
+            'chart_data': json.dumps(chart_data),
+            'countries':countries
+        }
+    except Exception as e:
+        print('Error while featching data:', e)
+        context = {}
+        messages.error(request,"Error while featching data")
+
     return render(request, 'dashboard.html', context)
 
 @login_required
